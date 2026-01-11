@@ -1,9 +1,11 @@
 import logger from "../config/logger.js";
 import Course from "../models/course.model.js";
+import { getKeywordsFromAI } from "../services/ai.service.js";
 import { uploadImage } from "../services/upload.service.js";
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/async-handler.js";
+import { prompts } from "../utils/propmts.js";
 import { courseCreationSchema } from "../validations/index.js";
 
 export const createCourse = asyncHandler(async (req, res, next) => {
@@ -42,4 +44,44 @@ export const createCourse = asyncHandler(async (req, res, next) => {
   res
     .status(201)
     .json(new ApiResponse(201, course, "Course created successfully"));
+});
+
+export const getCourse = asyncHandler(async (req, res, next) => {
+  const { search } = req.query;
+
+  if (!search || !search.trim()) {
+    const allCourses = await Course.find().sort({ createdAt: -1 });
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { allCourses, count: allCourses.length },
+          "Courses fetched successfully"
+        )
+      );
+  }
+
+  const prompt = prompts.getCoursePrompt(search);
+
+  const keyword = await getKeywordsFromAI(prompt);
+  logger.info(`Extracted keyword from AI: ${keyword}`);
+
+  const regex = new RegExp(keyword, "i");
+  const courses = await Course.find({
+    $or: [
+      { title: { $regex: regex, $exists: true } },
+      { description: { $regex: regex, $exists: true } },
+    ],
+  }).sort({ createdAt: -1 });
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { courses, count: courses.length, keyword },
+        "Courses fetched successfully"
+      )
+    );
 });

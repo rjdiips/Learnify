@@ -23,6 +23,7 @@ const envSchema = zod.object({
   CLOUDINARY_API_SECRET: zod
     .string()
     .min(1, "CLOUDINARY_API_SECRET is required"),
+  GEMINI_API_KEY: zod.string().min(1, "GEMINI_API_KEY is required"),
 });
 
 const ENV = {
@@ -41,6 +42,7 @@ const ENV = {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
 };
 
 const result = envSchema.safeParse(ENV);
