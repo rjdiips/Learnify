@@ -1,0 +1,30 @@
+import winston from "winston";
+
+const { combine, timestamp, json, printf, colorize } = winston.format;
+
+const consoleFormat = printf(({ level, message, timestamp }) => {
+  return `${timestamp} [${level}]: ${message}`;
+});
+
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || "info",
+  format: combine(timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), json()),
+  transports: [
+    new winston.transports.Console({
+      format: combine(
+        colorize(),
+        timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+        consoleFormat
+      ),
+    }),
+    new winston.transports.File({
+      filename: "logs/app.log",
+    }),
+    new winston.transports.File({
+      filename: "logs/error.log",
+      level: "error",
+    }),
+  ],
+});
+
+export default logger;

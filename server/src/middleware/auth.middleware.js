@@ -1,0 +1,26 @@
+import parsedEnv from "../config/env.js";
+import User from "../models/user.model.js";
+import { asyncHandler } from "../utils/async-handler.js";
+import jwt from "jsonwebtoken";
+import { ApiError } from "../utils/api-error.js";
+
+export const protectedRoute = asyncHandler(async (req, res, next) => {
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    throw new ApiError(401, "Unauthorized: No token provided");
+  }
+
+  const decoded = jwt.verify(token, parsedEnv.JWT_SECRET);
+  if (!decoded || !decoded.userId) {
+    throw new ApiError(401, "Unauthorized: Invalid token");
+  }
+
+  const user = await User.findById(decoded.userId).select("-password");
+  if (!user) {
+    throw new ApiError(401, "Unauthorized: User not found");
+  }
+
+  req.user = user;
+
+  next();
+});
