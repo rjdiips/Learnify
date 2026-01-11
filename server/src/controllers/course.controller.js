@@ -85,3 +85,14 @@ export const getCourse = asyncHandler(async (req, res, next) => {
       )
     );
 });
+
+export const getSingleCourse = asyncHandler(async (req, res, next) => {
+  const { courseId } = req.params;
+  const course = await Course.findById(courseId);
+  if (!course) {
+    throw new ApiError(404, "Course not found");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, course, "Course fetched successfully"));
+});
