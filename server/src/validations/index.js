@@ -27,3 +27,9 @@ export const userLoginSchema = z.object({
     .max(100, "Password must be at most 100 characters long")
     .nonoptional("Password is required"),
 });
+
+export const courseCreationSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  amount: z.string().min(1, "Amount is required"),
+});

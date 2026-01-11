@@ -16,6 +16,13 @@ const envSchema = zod.object({
   BREVO_SMTP_PASSWORD: zod.string().min(1, "BREVO_SMTP_PASSWORD is required"),
   EMAIL_FROM: zod.string().min(1, "EMAIL_FROM is required"),
   EMAIL_FROM_NAME: zod.string().min(1, "EMAIL_FROM_NAME is required"),
+  CLOUDINARY_CLOUD_NAME: zod
+    .string()
+    .min(1, "CLOUDINARY_CLOUD_NAME is required"),
+  CLOUDINARY_API_KEY: zod.string().min(1, "CLOUDINARY_API_KEY is required"),
+  CLOUDINARY_API_SECRET: zod
+    .string()
+    .min(1, "CLOUDINARY_API_SECRET is required"),
 });
 
 const ENV = {
@@ -31,6 +38,9 @@ const ENV = {
   BREVO_SMTP_PASSWORD: process.env.BREVO_SMTP_PASSWORD,
   EMAIL_FROM: process.env.EMAIL_FROM,
   EMAIL_FROM_NAME: process.env.EMAIL_FROM_NAME,
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 };
 
 const result = envSchema.safeParse(ENV);

@@ -1,0 +1,45 @@
+import logger from "../config/logger.js";
+import Course from "../models/course.model.js";
+import { uploadImage } from "../services/upload.service.js";
+import { ApiError } from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
+import { asyncHandler } from "../utils/async-handler.js";
+import { courseCreationSchema } from "../validations/index.js";
+
+export const createCourse = asyncHandler(async (req, res, next) => {
+  const courseCreationData = courseCreationSchema.safeParse(req.body);
+  const thumbnail = req.file;
+  if (!thumbnail) {
+    logger.error("Thumbnail image is required for course creation");
+    throw new ApiError(400, "Thumbnail image is required");
+  }
+
+  if (!courseCreationData.success) {
+    throw new ApiError(
+      400,
+      "Validation Error",
+      courseCreationData.error.issues.map((issue) => issue.message).join(", ")
+    );
+  }
+
+  const { title, description, amount } = courseCreationData.data;
+
+  const base64 = `data:${thumbnail.mimetype};base64,${thumbnail.buffer.toString(
+    "base64"
+  )}`;
+
+  const { url, publicId } = await uploadImage(base64, "course-thumbnails");
+
+  const course = await Course.create({
+    userId: req.user._id,
+    title,
+    description,
+    amount: Number(amount),
+    thumbnail: url,
+    thumbnailPublicId: publicId,
+  });
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, course, "Course created successfully"));
+});
