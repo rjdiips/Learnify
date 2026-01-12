@@ -1,5 +1,5 @@
 import express from "express";
-import { protectedRoute } from "../middleware/auth.middleware.js";
+import { adminRoute, protectedRoute } from "../middleware/auth.middleware.js";
 import {
   createCourse,
   getAllPurchasedCourses,
@@ -14,6 +14,7 @@ const router = express.Router();
 router.post(
   "/create-course",
   protectedRoute,
+  adminRoute,
   upload.single("thumbnail"),
   createCourse
 );

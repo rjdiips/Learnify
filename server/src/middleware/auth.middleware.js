@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
 
 export const protectedRoute = asyncHandler(async (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
@@ -23,4 +24,12 @@ export const protectedRoute = asyncHandler(async (req, res, next) => {
   req.user = user;
 
   next();
+});
+
+export const adminRoute = asyncHandler(async (req, res, next) => {
+  if (req.user && req.user.email === parsedEnv.ADMIN_EMAIL) {
+    next();
+  } else {
+    return res.status(403).json(new ApiResponse(403, null, "Forbidden"));
+  }
 });
