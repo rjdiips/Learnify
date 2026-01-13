@@ -6,20 +6,17 @@ const moduleSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
     },
-    video: { type: String, required: true, trim: true },
-    videoPublicId: { type: String, required: true, trim: true },
-    videoDuration: { type: Number, required: true },
     title: { type: String, required: true, trim: true },
+    lectures: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Lecture",
+      },
+    ],
     quiz: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Quiz",
     },
-    comment: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
   },
   { timestamps: true }
 );
