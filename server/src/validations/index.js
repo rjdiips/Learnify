@@ -43,6 +43,11 @@ export const moduleUpdationSchema = z.object({
   title: z.string().min(1, "Title is required"),
 });
 
+export const lectureCreationSchema = z.object({
+  moduleId: z.string().min(1, "Module ID is required"),
+  title: z.string().min(1, "Title is required"),
+});
+
 export const commendCreationSchema = z.object({
   comment: z.string().min(1, "Comment is required"),
 });

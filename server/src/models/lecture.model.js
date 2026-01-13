@@ -6,6 +6,7 @@ const lectureSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Module",
     },
+    title: { type: String, required: true, trim: true },
     video: { type: String, required: true, trim: true },
     videoPublicId: { type: String, required: true, trim: true },
     videoDuration: { type: Number, required: true },
