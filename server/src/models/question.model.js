@@ -12,7 +12,7 @@ const questionSchema = new mongoose.Schema(
       required: true,
     },
     options: [{ type: String }],
-    correntOptions: { type: String },
+    correctOptions: { type: String },
     explaination: { type: String },
   },
   { timestamps: true }
